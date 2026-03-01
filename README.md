@@ -22,6 +22,21 @@ Sequential:  8.502ms  (11762 items/sec)
 2 workers:   4.498ms  (22230 items/sec) - 1.89x faster
 4 workers:   2.498ms  (40019 items/sec) - 3.40x faster
 16 workers:  1.002ms  (99800 items/sec) - 8.49x faster
+
+--- Mutex Demo ---
+Depositor 1: +100
+Withdrawer 2: -200
+...
+Final balance: $1000 (expected $1000)
+
+--- Semaphore Demo ---
+Fetching 8 users (max 3 concurrent requests)
+  Fetched user 101
+  Fetched user 102
+  ...
+Results:
+  User 101: name=user_101, active=true
+  ...
 ```
 
 ## Project Structure
@@ -47,17 +62,17 @@ Key components:
 - **WaitGroups**: To wait for all workers to complete
 - **Goroutines**: Lightweight threads that process tasks concurrently
 
-## Use Cases
+### Mutex (Mutual Exclusion)
+A mutex protects shared state so only one goroutine can access it at a time. Without it, concurrent writes cause race conditions and lost updates.
 
-This pattern is useful for:
-- File hashing and checksums
-- Image/video processing
-- Data encryption/decryption
-- Parallel API calls
-- Batch database operations
-- Log file processing
+The demo simulates a bank account with concurrent deposits and withdrawals. The mutex ensures the balance is always correct.
+
+### Semaphore
+A semaphore limits how many goroutines can perform an action simultaneously. In Go, a buffered channel acts as a semaphore.
+
+The demo simulates rate-limited API calls, fetching user data with a max of 3 concurrent requests (common API restriction).
 
 ## Requirements
 
-- Go 1.16+
+- Go 1.22+ (uses range over integers)
 - No external dependencies
